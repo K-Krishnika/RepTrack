@@ -1,0 +1,11 @@
+venv/
+.venv/
+
+__pycache__/
+*.pyc
+
+data/
+processed/
+
+.vscode/
+.ipynb_checkpoints/
