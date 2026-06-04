@@ -1,11 +1,47 @@
+# Virtual environments
 venv/
 .venv/
+env/
 
+# Python
 __pycache__/
-*.pyc
+*.py[codz]
+*$py.class
 
+# VS Code
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Project datasets
 data/
 processed/
 
-.vscode/
-.ipynb_checkpoints/
+# Environment variables
+.env
+
+# Build files
+build/
+dist/
+*.egg-info/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Type checking
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
+
+# Pyre
+.pyre/
+
+# Pytype
+.pytype/
+
+# Logs
+*.log
