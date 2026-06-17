@@ -162,6 +162,12 @@ while True:
             confidence = float(np.max(prediction))
             pred = int(np.argmax(prediction))
 
+            if confidence < 0.5:
+                feedback_list.append(
+                        f"Wrong Exercise: {stable_prediction.replace('_', ' ').title()}"
+                    )
+
+
             if confidence >= 0.85:
                 exercise = encoder.inverse_transform([pred])[0]
                 prediction_history.append(exercise)
@@ -176,7 +182,18 @@ while True:
                 # ---------------------------
                 # Bicep Curl Analysis
                 # ---------------------------
-                if stable_prediction == "bicep_curl":
+                if stable_prediction != "bicep_curl":
+
+                    feedback_list.append(
+                        f"Wrong Exercise: {stable_prediction.replace('_', ' ').title()}"
+                    )
+
+    
+
+                # ---------------------------
+                # Bicep Curl Analysis
+                # ---------------------------
+                else:
                     lm = result.pose_landmarks.landmark
 
                     shoulder = [lm[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
@@ -193,7 +210,7 @@ while True:
                     if start_elbow_x is not None:
                         elbow_drift = abs(elbow[0] - start_elbow_x)
                         if elbow_drift > 0.05:
-                            feedback_list.append("Keep Elbows Close To Torso")
+                            feedback_list.append("Wrong exercise")
                             elbow_drift_detected = True
 
                     # Rep Counting
@@ -229,18 +246,31 @@ while True:
             # ---------------------------
             # On-Screen Text
             # ---------------------------
-            cv2.putText(frame, f"{stable_prediction}: {confidence:.2f}", (20, 40),
-                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-            cv2.putText(frame, f"Movement: {movement:.4f}", (20, 80),
+            #cv2.putText(frame, f"{stable_prediction}: {confidence:.2f}", (20, 40),
+                       # cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            cv2.putText(frame, f"Target: bicep_curl", (20, 80),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 0), 2)
+            cv2.putText(frame, f"Confidence: {confidence:.2f}", (20, 120),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
+            cv2.putText(frame, f"Angle: {min_curl_angle:.1f}", (20, 160),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
+            cv2.putText(frame, f"Reps: {rep_count}", (20, 200),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+            cv2.putText(frame, f"Stage: {stage}", (20, 240),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
+            cv2.putText(frame, "ESC = Exit", (20, 280),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
-            cv2.putText(frame, f"Angle: {curl_angle:.1f}", (20, 120),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
-            cv2.putText(frame, f"Reps: {rep_count}", (20, 160),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
-            cv2.putText(frame, f"Drift: {elbow_drift:.3f}", (20, 200),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
-            cv2.putText(frame, f"Min Angle: {min_curl_angle:.1f}", (20, 240),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+            #cv2.putText(frame, f"Movement: {movement:.4f}", (20, 80),
+            #            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+            #cv2.putText(frame, f"Angle: {curl_angle:.1f}", (20, 120),
+             #
+              #          cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+            #cv2.putText(frame, f"Reps: {rep_count}", (20, 160),
+             #           cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
+            #cv2.putText(frame, f"Drift: {elbow_drift:.3f}", (20, 200),
+             #           cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+            #cv2.putText(frame, f"Min Angle: {min_curl_angle:.1f}", (20, 240),
+             #           cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
 
             for i, fb in enumerate(feedback_list):
                 cv2.putText(frame, fb, (20, 290 + i * 40),

@@ -191,7 +191,16 @@ while True:
             # ---------------------------
             # Rep Counter
             # ---------------------------
-            if stable_prediction == target_exercise:
+            # ---------------------------
+# Check Target Exercise
+# ---------------------------
+            if stable_prediction != target_exercise:
+
+                feedback_list.append(
+                    f"Wrong Exercise"
+                )
+
+            elif stable_prediction == target_exercise:
                 lm = result.pose_landmarks.landmark
 
                 # -------------------------
